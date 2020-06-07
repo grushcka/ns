@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Providers;
+namespace NS\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -12,8 +11,8 @@ class AuthServiceProvider extends ServiceProvider
      *
      * @var array
      */
-    protected $policies = [
-        // 'App\Model' => 'App\Policies\ModelPolicy',
+    protected array $policies = [
+        // 'NS\Model' => 'NS\Policies\ModelPolicy',
     ];
 
     /**

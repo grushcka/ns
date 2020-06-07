@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Middleware;
+namespace NS\Http\Middleware;
 
-use App\Providers\RouteServiceProvider;
+use NS\Providers\RouteServiceProvider;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 
