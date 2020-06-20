@@ -3,34 +3,19 @@
 namespace NS\Http;
 
 use Fruitcake\Cors\HandleCors;
-use Illuminate\Auth\Middleware\{
-    AuthenticateWithBasicAuth,
-    Authorize,
-    EnsureEmailIsVerified,
-    RequirePassword
-};
+use Illuminate\Auth\Middleware\{AuthenticateWithBasicAuth, Authorize, EnsureEmailIsVerified, RequirePassword};
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
-use Illuminate\Foundation\Http\{
-    Kernel as HttpKernel,
+use Illuminate\Foundation\Http\{Kernel as HttpKernel,
     Middleware\ConvertEmptyStringsToNull,
     Middleware\ValidatePostSize
 };
 use Illuminate\Http\Middleware\SetCacheHeaders;
-use Illuminate\Routing\Middleware\{
-    SubstituteBindings,
-    ThrottleRequests,
-    ValidateSignature
-};
-use Illuminate\Session\{
-    Middleware\AuthenticateSession,
-    Middleware\StartSession
-};
+use Illuminate\Routing\Middleware\{SubstituteBindings, ThrottleRequests, ValidateSignature};
+use Illuminate\Session\{Middleware\AuthenticateSession, Middleware\StartSession};
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use NS\Http\Middleware\{
-    Authenticate,
+use NS\Http\Middleware\{Authenticate,
     CheckForMaintenanceMode,
     EncryptCookies,
-    RedirectIfAuthenticated,
     TrimStrings,
     TrustProxies,
     VerifyCsrfToken
@@ -90,7 +75,6 @@ class Kernel extends HttpKernel
         'bindings' => SubstituteBindings::class,
         'cache.headers' => SetCacheHeaders::class,
         'can' => Authorize::class,
-        'guest' => RedirectIfAuthenticated::class,
         'password.confirm' => RequirePassword::class,
         'signed' => ValidateSignature::class,
         'throttle' => ThrottleRequests::class,

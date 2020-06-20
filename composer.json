@@ -46,7 +46,7 @@
         "psr-4": {
             "Tests\\": "tests/",
             "NS\\User\\": "app/Http/Modules/User",
-            "NS\\ACL\\": "app/Http/Modules/ACL"
+            "NS\\Auth\\": "app/Http/Modules/Auth"
         }
     },
     "minimum-stability": "dev",

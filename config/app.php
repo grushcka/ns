@@ -170,12 +170,12 @@ return [
          * Application Service Providers...
          */
         NS\Providers\AppServiceProvider::class,
-        NS\Providers\AuthServiceProvider::class,
         // NS\Providers\BroadcastServiceProvider::class,
         NS\Providers\EventServiceProvider::class,
         NS\Providers\RouteServiceProvider::class,
 
-        NS\User\UsersProvider::class
+        NS\User\UsersServiceProvider::class,
+        NS\Auth\AuthServiceProvider::class,
     ],
 
     /*

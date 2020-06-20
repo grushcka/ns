@@ -7,7 +7,7 @@ use NS\User\Middlewares\CurrentUserProfile;
 use NS\User\Models\User;
 use Illuminate\Auth\Access\Response;
 
-class UsersProvider extends ServiceProvider
+class UsersServiceProvider extends ServiceProvider
 {
     /**
      * Register services.
@@ -49,7 +49,7 @@ class UsersProvider extends ServiceProvider
                     ->where(['user' => '\d+?'])
                     ->name('profile')
                     ->namespace('NS\User\Controllers')
-                    ->group(__DIR__.'/Routes/routes.php');
+                    ->group(__DIR__.'/Routes/profile_routes.php');
             });
     }
 

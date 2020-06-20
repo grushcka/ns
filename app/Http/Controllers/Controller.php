@@ -2,10 +2,18 @@
 
 namespace NS\Http\Controllers;
 
-use Illuminate\Foundation\{Auth\Access\AuthorizesRequests, Bus\DispatchesJobs, Validation\ValidatesRequests};
+use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Routing\Controller as BaseController;
 
 class Controller extends BaseController
 {
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+    /**
+     * Show the application dashboard.
+     *
+     * @return Renderable
+     */
+    public function index(): Renderable
+    {
+        return view('index');
+    }
 }
