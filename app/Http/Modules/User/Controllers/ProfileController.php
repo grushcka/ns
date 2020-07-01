@@ -2,18 +2,14 @@
 
 namespace NS\User\Controllers;
 
-/**
- * @TODO add tests
- */
-
 use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 use NS\Http\Traits\ViewHelper;
-use Illuminate\Routing\Controller;
 use NS\User\Models\User;
 use NS\User\Requests\ProfileUpdateRequest;
 
@@ -24,7 +20,7 @@ class ProfileController extends Controller
     /**
      * @var string $viewPrefix
      */
-    private string $viewPrefix = 'user::profile';
+    private string $viewPrefix = 'user.profile';
 
     /**
      * Display a profile.
@@ -56,7 +52,7 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request, User $user): RedirectResponse
     {
-        Gate::authorize('change-profile', $user);
+        Gate::authorize('change', $user);
         $user->update($request->validated());
         session()->flash('status', trans('Profile Updated'));
 
@@ -72,7 +68,7 @@ class ProfileController extends Controller
      */
     public function delete(User $user): void
     {
-        Gate::authorize('change-profile', $user);
+        Gate::authorize('change', $user);
         $user->delete();
     }
 }

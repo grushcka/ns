@@ -116,5 +116,6 @@ return [
 
     'password_timeout' => 10800,
 
-    'after_login_redirect' => 'profile',
+    'after_login_redirect' => 'user/profile',
+    'username' => 'username'
 ];

@@ -17,7 +17,7 @@
                             </div>
                         @endif
                         Its Your Profile Edit Page
-                        @can('isOwner',$user)
+                        @can('change',$user)
                             <form method="POST" action="{{route('profile.update',$user)}}">
                                 @csrf
                                 @error('login')

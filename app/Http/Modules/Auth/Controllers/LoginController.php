@@ -4,22 +4,24 @@ namespace NS\Auth\Controllers;
 
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\{JsonResponse, RedirectResponse, Request, Response};
-use Illuminate\Support\Facades\{Config, Event};
-use Illuminate\Validation\ValidationException;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\{Config};
+use Illuminate\Validation\ValidationException;
+use NS\Auth\Models\AuthLog;
 
 class LoginController extends Controller
 {
     use AuthenticatesUsers;
 
-   /**
+    /**
      * Create a new controller instance.
      *
      * @return void
      */
     public function __construct()
     {
-        $this->middleware('guest')->except('logout');
+        $this->middleware('guest')
+            ->except('logout');
     }
 
 
@@ -32,8 +34,10 @@ class LoginController extends Controller
     {
         $login = request()->input(Config::get('auth.username', 'username'));
 
-        $field = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
-        request()->merge([$field => $login]);
+        $field = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'login';
+        request()->merge([
+            $field => $login,
+        ]);
 
         return $field;
     }
@@ -58,11 +62,12 @@ class LoginController extends Controller
         }
 
         if ($this->attemptLogin($request)) {
-            Event::dispatch('auth.login_success', [
-                'username' => $request->post($this->username()),
-                'ip' => $request->getClientIp(),
-                'agent' => $request->userAgent(),
-            ]);
+            AuthLog::saveEvent(
+                AuthLog::EVENT_LOGIN_SUCCESS,
+                $request->post($this->username()),
+                $request->getClientIp(),
+                $request->userAgent()
+            );
 
             return $this->sendLoginResponse($request);
         }
@@ -72,11 +77,12 @@ class LoginController extends Controller
         // user surpasses their maximum number of attempts they will get locked out.
         $this->incrementLoginAttempts($request);
 
-        Event::dispatch('auth.login_failed', [
-            'username' => $request->post($this->username()),
-            'ip' => $request->getClientIp(),
-            'agent' => $request->userAgent(),
-        ]);
+        AuthLog::saveEvent(
+            AuthLog::EVENT_LOGIN_FAILED,
+            $request->post($this->username()),
+            $request->getClientIp(),
+            $request->userAgent()
+        );
 
         return $this->sendFailedLoginResponse($request);
     }
@@ -85,4 +91,5 @@ class LoginController extends Controller
     {
         return Config::get('auth.after_login_redirect', 'home');
     }
+
 }

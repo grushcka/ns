@@ -3,7 +3,7 @@
 namespace NS\Http;
 
 use Fruitcake\Cors\HandleCors;
-use Illuminate\Auth\Middleware\{AuthenticateWithBasicAuth, Authorize, EnsureEmailIsVerified, RequirePassword};
+use Illuminate\Auth\Middleware\{AuthenticateWithBasicAuth, Authorize, RequirePassword};
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Foundation\Http\{Kernel as HttpKernel,
     Middleware\ConvertEmptyStringsToNull,
@@ -13,13 +13,9 @@ use Illuminate\Http\Middleware\SetCacheHeaders;
 use Illuminate\Routing\Middleware\{SubstituteBindings, ThrottleRequests, ValidateSignature};
 use Illuminate\Session\{Middleware\AuthenticateSession, Middleware\StartSession};
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use NS\Http\Middleware\{Authenticate,
-    CheckForMaintenanceMode,
-    EncryptCookies,
-    TrimStrings,
-    TrustProxies,
-    VerifyCsrfToken
-};
+use NS\Auth\Middlewares\Authenticate;
+use NS\Http\Middleware\{CheckForMaintenanceMode, EncryptCookies, TrimStrings, TrustProxies, VerifyCsrfToken};
+use NS\User\Middlewares\{EnsureEmailIsVerified, IsBanned, IsSuspended};
 
 class Kernel extends HttpKernel
 {
@@ -30,7 +26,7 @@ class Kernel extends HttpKernel
      *
      * @var array
      */
-    protected array $middleware = [
+    protected $middleware = [
         // \NS\Http\Middleware\TrustHosts::class,
         TrustProxies::class,
         HandleCors::class,
@@ -45,7 +41,7 @@ class Kernel extends HttpKernel
      *
      * @var array
      */
-    protected array $middlewareGroups = [
+    protected $middlewareGroups = [
         'web' => [
             EncryptCookies::class,
             AddQueuedCookiesToResponse::class,
@@ -55,7 +51,11 @@ class Kernel extends HttpKernel
             VerifyCsrfToken::class,
             SubstituteBindings::class,
         ],
-
+        'auth' => [
+            Authenticate::class,
+            IsBanned::class,
+            IsSuspended::class,
+        ],
         'api' => [
             'throttle:60,1',
             SubstituteBindings::class,
@@ -69,8 +69,7 @@ class Kernel extends HttpKernel
      *
      * @var array
      */
-    protected array $routeMiddleware = [
-        'auth' => Authenticate::class,
+    protected $routeMiddleware = [
         'auth.basic' => AuthenticateWithBasicAuth::class,
         'bindings' => SubstituteBindings::class,
         'cache.headers' => SetCacheHeaders::class,

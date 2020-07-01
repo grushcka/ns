@@ -4,6 +4,8 @@ namespace NS\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use NS\Console\Commands\MigrateAll;
+use NS\Console\Commands\RefreshAll;
 
 class Kernel extends ConsoleKernel
 {
@@ -13,7 +15,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        MigrateAll::class,
+        RefreshAll::class,
     ];
 
     /**

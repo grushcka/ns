@@ -21,7 +21,8 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
-            $table->smallInteger('role');
+            $table->smallInteger('role')->default(\NS\User\Models\User::ROLE_USER);
+            $table->smallInteger('status')->default(NS\User\Models\User::STATUS_ACTIVE);
             $table->timestamp('deleted_at')->nullable();
         });
     }

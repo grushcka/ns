@@ -5,7 +5,7 @@ namespace NS\User;
 use Illuminate\Support\{Facades\Gate, Facades\Route, ServiceProvider};
 use NS\User\Middlewares\CurrentUserProfile;
 use NS\User\Models\User;
-use Illuminate\Auth\Access\Response;
+use NS\User\Policies\UserProfilePolicy;
 
 class UsersServiceProvider extends ServiceProvider
 {
@@ -26,11 +26,31 @@ class UsersServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->addRegistrationRoutes();
+        $this->addPasswordResetRoutes();
         $this->addProfileRoutes();
-        $this->registerPolicies();
 
+        $this->profilePolicies();
+
+        $this->mergeConfigFrom(__DIR__.'/Config/user.php', 'user');
         $this->loadMigrationsFrom(__DIR__.'/DB/migrations');
-        $this->loadViewsFrom(__DIR__.'/Views', 'user');
+    }
+
+    /**
+     * Profile Control routes
+     * @return void
+     */
+    private function addRegistrationRoutes(): void
+    {
+        Route::prefix('user')
+            ->group(static function () {
+                Route::middleware([
+                    'web',
+                ])
+                    ->name('user')
+                    ->namespace('NS\User\Controllers')
+                    ->group(__DIR__.'/Routes/registration_routes.php');
+            });
     }
 
     /**
@@ -44,22 +64,28 @@ class UsersServiceProvider extends ServiceProvider
                 Route::middleware([
                     'web',
                     'auth',
+                    'verified',
                     CurrentUserProfile::class,
                 ])
                     ->where(['user' => '\d+?'])
-                    ->name('profile')
+                    ->name('user.profile')
                     ->namespace('NS\User\Controllers')
                     ->group(__DIR__.'/Routes/profile_routes.php');
             });
     }
 
-    private function registerPolicies(): void
+    private function profilePolicies(): void
     {
-        Gate::define('change-profile', static function (User $user, User $profile) {
-            return $user->id === $profile->id
-                ? Response::allow()
-                : Response::deny(trans('You do not have permission.'));
-        });
+        Gate::define(User::class, UserProfilePolicy::class);
+    }
+
+    private function addPasswordResetRoutes(): void
+    {
+        Route::middleware([
+            'web',
+        ])
+            ->namespace('NS\User\Controllers')
+            ->group(__DIR__.'/Routes/password_reset_routes.php');
     }
 
 }

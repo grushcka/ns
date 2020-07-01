@@ -16,8 +16,8 @@ class CreateAuthLogsTable extends Migration
         Schema::create('auth_logs', static function (Blueprint $table) {
             $table->id();
             $table->enum('event', [
-                'login_failed',
                 'login_success',
+                'login_failed',
                 'other',
             ]);
             $table->string('ip');
